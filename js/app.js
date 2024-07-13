@@ -54,19 +54,18 @@ const updateBoard = () => {
 
 const updateMessage = () => {
     if (winner === false && tie === false) {
-        messageEl.textContent = `It's the turn of Player ${turn}. Please click on an empty square!`
+        messageEl.textContent = `It's the turn of ${turn}. Please click on an empty square!`
     } else if (winner === false && tie) {
         messageEl.textContent = `It's a Tie!!`
     } else {
-        messageEl.textContent = `Player ${turn} won! Congratulations!`
-
+        messageEl.textContent = `${turn} won! Congratulations!`
     }
 }
 
 //Show player Scores
 const showPlayerScores = () => {
-    p1El.textContent = `Player X: ${p1Score}`
-    p2El.textContent = `Player O: ${p2Score}`
+    p1El.textContent = `🐱: ${p1Score}`
+    p2El.textContent = `🐶: ${p2Score}`
 }
 
 const render = () => {
@@ -75,18 +74,27 @@ const render = () => {
     showPlayerScores()
 }
 
+// reset the background color for all squares
+const resetSquares = () => {
+    squareEls.forEach(square => {
+        square.classList.remove('clickedSqr')
+    })
+}
+
+
 const init = () => {
     board = [
         '', '', '',
         '', '', '', 
         '', '', '',
        ]
-    turn = 'X'
+    turn = '🐱'
     winner = false
     tie = false
     p1Score = 0
     p2Score = 0   
     render()
+    resetSquares()
     disableContinue()
 }
 init()
@@ -94,6 +102,7 @@ init()
 //place Piece on the board
 const placePiece = (index) => {
     board[index] = turn
+    squareEls[index].classList.add('clickedSqr')
 }
 
 //check for winner
@@ -106,7 +115,7 @@ const checkForWinner = () => {
         if (winCombo[0] !== '' && winCombo[0] === winCombo[1] && winCombo[0] === winCombo[2]) {
             winner = true
             enableContinue()
-            if (turn === 'X') {
+            if (turn === '🐱') {
                 p1Score++
             } else {
                 p2Score++
@@ -137,10 +146,10 @@ const checkForTie = () => {
 const switchPlayerTurn = () => {
     if (winner) {
         return
-    } else if (turn === 'X') {
-        turn = 'O'
+    } else if (turn === '🐱') {
+        turn = '🐶'
     } else {
-        turn = 'X'
+        turn = '🐱'
     }
 }
 
@@ -159,7 +168,7 @@ const handleClick = (event) => {
 }
 
 // cleaning the board to continue playing
-const contInit = () => {
+const continueGame = () => {
     board = [
         '', '', '',
         '', '', '', 
@@ -169,14 +178,11 @@ const contInit = () => {
     tie = false
     switchPlayerTurn()
     render()
+    resetSquares()
     disableContinue()
 }
 
-//Continue the game with scoring
-const continueGame = () => {
-    contInit()
-    
-}
+
 
 /*----------------------------- Event Listeners -----------------------------*/
 
