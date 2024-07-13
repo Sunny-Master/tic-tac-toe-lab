@@ -21,20 +21,10 @@ let tie
 const squareEls = document.querySelectorAll('.sqr')
 const messageEl = document.querySelector('#message')
 const boardEl = document.querySelector('.board')
+const resetBtnEl = document.querySelector('#reset')
+const contBtnEl = document.querySelector('#continue')
 
 /*-------------------------------- Functions --------------------------------*/
-const init = () => {
-    console.log('game initiated')
-    board = [
-        '', '', '',
-        '', '', '', 
-        '', '', '',
-       ]
-    turn = 'X'
-    winner = false
-    tie = false
-}
-init()
 
 const updateBoard = () => {
     board.forEach((box, idx) => {
@@ -58,12 +48,22 @@ const render = () => {
     updateMessage()
 }
 
-render()
+const init = () => {
+    board = [
+        '', '', '',
+        '', '', '', 
+        '', '', '',
+       ]
+    turn = 'X'
+    winner = false
+    tie = false
+    render()
+}
+init()
 
 //place Piece on the board
 const placePiece = (index) => {
     board[index] = turn
-    console.log(board)
 }
 
 //check for winner
@@ -105,7 +105,6 @@ const switchPlayerTurn = () => {
     } else {
         turn = 'X'
     }
-    console.log(turn)
 }
 
 const handleClick = (event) => {
@@ -128,4 +127,5 @@ const handleClick = (event) => {
 /*----------------------------- Event Listeners -----------------------------*/
 
 boardEl.addEventListener('click', handleClick)
+resetBtnEl.addEventListener('click', init)
 

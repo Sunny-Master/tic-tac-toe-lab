@@ -22,4 +22,13 @@ body {
     text-align: center;
     font-weight: bold ; /* added */
   }
-  
+
+/* styling added for buttons */
+.btn {
+    font-size: 20px;
+    margin: 20px;
+    font-weight: bold;
+    width: 100px ;
+    height: 35px;
+    border-radius: 0.25rem;
+  }
