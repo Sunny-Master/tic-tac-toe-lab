@@ -18,6 +18,7 @@ let winner
 let tie 
 let p1Score
 let p2Score
+let piece
 
 /*------------------------ Cached Element References ------------------------*/
 const squareEls = document.querySelectorAll('.sqr')
@@ -30,6 +31,8 @@ const scoresEl = document.querySelector('#scores')
 const p1El = document.querySelector('#player1')
 const p2El = document.querySelector('#player2')
 
+const meowEl = document.querySelector('#meow')
+const barkEl = document.querySelector('#bark')
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -88,7 +91,7 @@ const init = () => {
         '', '', '', 
         '', '', '',
        ]
-    turn = '🐱'
+    turn = 'X'
     winner = false
     tie = false
     p1Score = 0
@@ -101,7 +104,14 @@ init()
 
 //place Piece on the board
 const placePiece = (index) => {
-    board[index] = turn
+    if (turn === 'X') {
+        piece = '🐱'
+        meowEl.play()
+    } else {
+        piece = '🐶'
+        barkEl.play()
+    }
+    board[index] = piece
     squareEls[index].classList.add('clickedSqr')
 }
 
@@ -115,7 +125,7 @@ const checkForWinner = () => {
         if (winCombo[0] !== '' && winCombo[0] === winCombo[1] && winCombo[0] === winCombo[2]) {
             winner = true
             enableContinue()
-            if (turn === '🐱') {
+            if (turn === 'X') {
                 p1Score++
             } else {
                 p2Score++
@@ -146,10 +156,10 @@ const checkForTie = () => {
 const switchPlayerTurn = () => {
     if (winner) {
         return
-    } else if (turn === '🐱') {
-        turn = '🐶'
+    } else if (turn === 'X') {
+        turn = 'O'
     } else {
-        turn = '🐱'
+        turn = 'X'
     }
 }
 
