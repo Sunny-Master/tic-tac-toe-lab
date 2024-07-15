@@ -12,13 +12,9 @@ const winningCombos = [
 
 
 /*---------------------------- Variables (state) ----------------------------*/
-let board 
-let turn 
-let winner 
-let tie 
-let p1Score
-let p2Score
-let piece
+let board, turn, winner, tie 
+let p1Score, p2Score
+let piece, winSound
 
 /*------------------------ Cached Element References ------------------------*/
 const squareEls = document.querySelectorAll('.sqr')
@@ -36,56 +32,8 @@ const barkEl = document.querySelector('#bark')
 
 /*-------------------------------- Functions --------------------------------*/
 
-// to toggle disable attributefor the 'Continue' button
-const enableContinue = () => {
-    if (contBtnEl.hasAttribute('disabled')) {
-        contBtnEl.removeAttribute('disabled')
-      }
-}
-
-const disableContinue = () => {
-    if (contBtnEl.hasAttribute('disabled') === false) {
-        contBtnEl.setAttribute('disabled', true)
-    }
-}
-
-const updateBoard = () => {
-    board.forEach((box, idx) => {
-        squareEls[idx].textContent = box
-    });
-}
-
-const updateMessage = () => {
-    if (winner === false && tie === false) {
-        messageEl.textContent = `It's the turn of ${turn}. Please click on an empty square!`
-    } else if (winner === false && tie) {
-        messageEl.textContent = `It's a Tie!!`
-    } else {
-        messageEl.textContent = `${turn} won! Congratulations!`
-    }
-}
-
-//Show player Scores
-const showPlayerScores = () => {
-    p1El.textContent = `🐱: ${p1Score}`
-    p2El.textContent = `🐶: ${p2Score}`
-}
-
-const render = () => {
-    updateBoard()
-    updateMessage()
-    showPlayerScores()
-}
-
-// reset the background color for all squares
-const resetSquares = () => {
-    squareEls.forEach(square => {
-        square.classList.remove('clickedSqr')
-    })
-}
-
-
-const init = () => {
+init()
+function init() {
     board = [
         '', '', '',
         '', '', '', 
@@ -97,26 +45,80 @@ const init = () => {
     p1Score = 0
     p2Score = 0   
     render()
-    resetSquares()
     disableContinue()
 }
-init()
+
+function render() {
+    updateBoard()
+    updateMessage()
+    showPlayerScores()
+}
+
+function updateBoard() {
+    board.forEach((cell, idx) => {
+        if  (cell === 'X') {
+            squareEls[idx].textContent = '🐱'
+            squareEls[idx].style.backgroundColor = 'azure'
+        } else if (cell === 'O') {
+            squareEls[idx].textContent = '🐶'
+            squareEls[idx].style.backgroundColor = 'azure'
+        } else {
+            squareEls[idx].textContent = ''
+            squareEls[idx].style.backgroundColor = 'gainsboro'
+        }
+    })
+}
+
+// update the message displayed to players
+function updateMessage() {
+    if (winner === false && tie === false) {
+        messageEl.textContent = `It's the turn of ${turn}. Please click on an empty square!`
+    } else if (winner === false && tie) {
+        messageEl.textContent = `It's a Tie!!`
+    } else {
+        messageEl.textContent = `${turn} won! Congratulations!`
+        winSound.play()
+    }
+}
+
+// to enable the 'Continue' button
+function enableContinue() {
+    if (contBtnEl.hasAttribute('disabled')) {
+        contBtnEl.removeAttribute('disabled')
+      }
+}
+
+//to disable the 'Continue' button
+function disableContinue() {
+    if (contBtnEl.hasAttribute('disabled') === false) {
+        contBtnEl.setAttribute('disabled', true)
+    }
+}
+
+//Show player Scores
+function showPlayerScores() {
+    p1El.textContent = `🐱: ${p1Score}`
+    p2El.textContent = `🐶: ${p2Score}`
+}
+
+// when a player clicks on a square
+function handleClick(event) {
+    const squareIndex = parseInt(event.target.id) // parseInt to convert string to number
+    if (board[squareIndex] !== '' || winner) return
+    placePiece(squareIndex)
+    checkForWinner()
+    checkForTie()
+    switchPlayerTurn()
+    render()
+}
 
 //place Piece on the board
-const placePiece = (index) => {
-    if (turn === 'X') {
-        piece = '🐱'
-        meowEl.play()
-    } else {
-        piece = '🐶'
-        barkEl.play()
-    }
-    board[index] = piece
-    squareEls[index].classList.add('clickedSqr')
+function placePiece(index) {
+    board[index] = turn
 }
 
 //check for winner
-const checkForWinner = () => {
+function checkForWinner() {
     winningCombos.forEach(winningCombo => {
         let winCombo = []
         winningCombo.forEach(pos => {
@@ -127,58 +129,34 @@ const checkForWinner = () => {
             enableContinue()
             if (turn === 'X') {
                 p1Score++
+                winSound = meowEl
             } else {
                 p2Score++
+                winSound = barkEl
             }
         }
     })
 }
 
 //check for Tie
-const checkForTie = () => {
-    if (winner) { 
+function checkForTie() {
+    if (winner || board.includes('')) { 
         return
     }
-    let emptyCount = 0
-    board.forEach(sqr => {
-        if (sqr === '') {
-            emptyCount++
-        }
-    })
-    if (emptyCount) {
-        return
-    } 
     tie = true
     enableContinue()
 }
 
 // switch Player Turn
-const switchPlayerTurn = () => {
+function switchPlayerTurn() {
     if (winner) {
         return
-    } else if (turn === 'X') {
-        turn = 'O'
-    } else {
-        turn = 'X'
-    }
+    } 
+    turn = turn === 'X' ? 'O' : 'X'
 }
 
-const handleClick = (event) => {
-    const squareIndex = event.target.id
-    if (board[squareIndex]) {
-        return
-    } else if (winner) {
-        return
-    }
-    placePiece(squareIndex)
-    checkForWinner()
-    checkForTie()
-    switchPlayerTurn()
-    render()
-}
-
-// cleaning the board to continue playing
-const continueGame = () => {
+//when a player clicks on 'Continue' button to continue the same gaming session
+function continueGame() {
     board = [
         '', '', '',
         '', '', '', 
@@ -188,11 +166,8 @@ const continueGame = () => {
     tie = false
     switchPlayerTurn()
     render()
-    resetSquares()
     disableContinue()
 }
-
-
 
 /*----------------------------- Event Listeners -----------------------------*/
 

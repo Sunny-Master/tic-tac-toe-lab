@@ -1,12 +1,9 @@
 body {
-    /*background-color: gainsboro; */
+    background-color: gainsboro; 
     /* Use a system font, if none are available use an available sans-sarif */
     font-family: system-ui, sans-serif;
     margin: 0;
     text-align: center; /* added */
-    /*background: url('../images/background.png');
-    background-position: center;
-    background-size: cover; */
   }
   
   .board {
@@ -36,14 +33,12 @@ body {
     border-radius: 0.25rem;
   }
 
+/* added color change for button hover */
 .btn:hover {
   background-color: aqua;
 }
 
+/* reset color for disabled button*/
 .btn[disabled]:hover {
   background-color: gainsboro;
-}
-
-.clickedSqr {
-  background: azure;
 }
