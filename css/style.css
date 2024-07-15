@@ -42,3 +42,7 @@ body {
 .btn[disabled]:hover {
   background-color: gainsboro;
 }
+
+#game-score {
+  text-decoration: underline;
+}
