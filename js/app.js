@@ -10,6 +10,7 @@ const winningCombos = [
     [2, 5, 8],
 ]
 
+const tieSound = new Audio('../assets/tie.mp3')
 
 /*---------------------------- Variables (state) ----------------------------*/
 let board, turn, winner, tie 
@@ -58,13 +59,13 @@ function updateBoard() {
     board.forEach((cell, idx) => {
         if  (cell === 'X') {
             squareEls[idx].textContent = '🐱'
-            squareEls[idx].style.backgroundColor = 'azure'
+            squareEls[idx].style.backgroundColor = '#83C5BE'
         } else if (cell === 'O') {
             squareEls[idx].textContent = '🐶'
-            squareEls[idx].style.backgroundColor = 'azure'
+            squareEls[idx].style.backgroundColor = '#83C5BE'
         } else {
             squareEls[idx].textContent = ''
-            squareEls[idx].style.backgroundColor = 'gainsboro'
+            squareEls[idx].style.backgroundColor = '#EDF6F9'
         }
     })
 }
@@ -72,11 +73,11 @@ function updateBoard() {
 // update the message displayed to players
 function updateMessage() {
     if (winner === false && tie === false) {
-        messageEl.textContent = `It's the turn of ${turn}. Please click on an empty square!`
+        messageEl.textContent = `It's the turn of ${turn === 'X' ? '🐱' : '🐶'}. Please click on an empty square!`
     } else if (winner === false && tie) {
         messageEl.textContent = `It's a Tie!!`
     } else {
-        messageEl.textContent = `${turn} won! Congratulations!`
+        messageEl.textContent = `${turn === 'X' ? '🐱' : '🐶'} won! Congratulations!`
         winSound.play()
     }
 }
@@ -126,6 +127,7 @@ function checkForWinner() {
         })
         if (winCombo[0] !== '' && winCombo[0] === winCombo[1] && winCombo[0] === winCombo[2]) {
             winner = true
+            confetti.start(1000)
             enableContinue()
             if (turn === 'X') {
                 p1Score++
@@ -144,6 +146,7 @@ function checkForTie() {
         return
     }
     tie = true
+    tieSound.play()
     enableContinue()
 }
 
